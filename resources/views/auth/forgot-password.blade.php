@@ -47,7 +47,8 @@
                     Did you forgot your password? <br>
                     Just let us know your email address and we will email you a password reset link.
                 </p>
-
+                
+                <x-status-alert></x-status-alert>
                 <form action="{{ route('password.email') }}" method="post">
                     @csrf
                     <div class="input-group mb-3">
