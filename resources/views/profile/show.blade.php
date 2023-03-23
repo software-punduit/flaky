@@ -50,7 +50,8 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <x-content-header title="profile"></x-content-header>
+        <x-content-header title="Profile"></x-content-header>
+
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
