@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Requests\PostProfile;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 
 class ProfileController extends Controller
 {
@@ -28,9 +30,22 @@ class ProfileController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(PostProfile $request): RedirectResponse
     {
-        //
+        $user = Auth::user();
+        $profile =$user->profile;
+        $profileData = $request->only(['address', 'phone']);
+        $userData = $request->only('name');
+        $user->update($userData);
+        if ($profile === null) {
+            $user->profile()->create($profileData);
+        } else {
+            $profile->update($profileData);
+        }
+        
+        return back()->with([
+            'status' => 'Profile successfully updated'
+        ]);
     }
 
     /**

@@ -64,7 +64,11 @@
                             </div>
                             <!-- /.card-header -->
                             <!-- form start -->
-                            <form>
+                            <x-status-alert></x-status-alert>
+                            
+                            <form action="{{ route('profiles.store') }}" method="POST">
+                                @csrf
+                                
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label for="name">Name</label>
@@ -90,7 +94,7 @@
                                     <div class="form-group">
                                         <label for="phone">Phone</label>
                                         <input type="tel" class="form-control @error('phone') is-invalid @enderror" id="phone"
-                                            placeholder=" Enter Phone Number" name="phone">
+                                            placeholder=" Enter Phone Number" name="phone" value="{{ old('phone', is_null(Auth::user()->profile) ? '' : Auth::user()->profile->phone) }}">
                                             @error('phone')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -100,7 +104,7 @@
                                     <div class="form-group">
                                         <label for="address">Address</label>
                                         <textarea class="form-control @error('address') is-invalid @enderror" id="address"
-                                            placeholder=" Enter Address" name="address"></textarea>
+                                            placeholder=" Enter Address" name="address" value="{{ old('address', is_null(Auth::user()->profile) ? '' : Auth::user()->profile->address) }}">{{ old('address', is_null(Auth::user()->profile) ? '' : Auth::user()->profile->address) }}</textarea>
                                             @error('address')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -108,18 +112,18 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label for="profile-pic">Profile Picture</label>
+                                        <label for="photo">Profile Picture</label>
                                         <div class="input-group">
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input @error('profile-pic')    
-                                                @enderror" id="profile-pic">
-                                                <label class="custom-file-label" for="profile-pic">Choose
+                                                <input type="file" class="custom-file-input @error('photo')    
+                                                @enderror" id="photo">
+                                                <label class="custom-file-label" for="photo">Choose
                                                     file</label>
                                             </div>
                                             {{-- <div class="input-group-append">
                                                 <span class="input-group-text">Upload</span>
                                             </div> --}}
-                                            @error('profile-pic')
+                                            @error('photo')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
                                             </div>

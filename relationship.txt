@@ -1,0 +1,84 @@
+3 types of relationships
+
+1. One-to-one relationship 1 record can be related to only 1 of another record
+2. One-to-many relationship 1 record can be related to 1 or more of another record
+3. Many-to-many relationship 1 or more records can be related to 1 or more of another record
+
+
+What is a relationship
+In database theory, a relationship is when two or more tables
+have a share the same value in a column.
+
+It's when two or more tables have something in common.
+
+users table => profiles table
+id 22							id
+name					22	user_id (foreign key references id on users table)
+email						phone
+...							....
+
+Every user should have a profile
+
+User => Profile (One-to-one relationship)
+
+users table => restuarants table
+id							id
+name						owner_id (foreign key references id on users table)
+email						name
+...							....
+
+users table <= role_user table => roles table
+id							id									id
+name						user_id 						name
+email						role_id							...
+...
+
+
+User model
+One-to-one
+public function profile(){
+	return $this->hasOne(Profile::classs);
+}
+
+One-to-many
+public function restaurants(){
+	return $this->hasOne(Restuarant::classs);
+}
+
+Many-to-many
+public function roles(){
+	return $this->belongsToMany(Role::classs);
+}
+
+Reverse relationships
+Profile
+public function user(){
+	return $this->belongsTo(User::classs);
+}
+
+Restuarant
+public function user(){
+	return $this->belongsTo(User::classs);
+}
+
+Role
+public function user(){
+	return $this->belongsToMany(User::classs);
+}
+
+Database Table => Model
+
+Model is a logical representation of a single record in the database table.
+
+users
+name|email|password
+Aba|...
+Ada|...
+Ama|...
+
+$user = User::where('name', 'Aba')->first(); // A user model
+
+$users = User::all(); // A collection of user models
+
+
+ORM => Object-Relation Mapper (Eloquent)
