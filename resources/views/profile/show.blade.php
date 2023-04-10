@@ -57,6 +57,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-6 offset-md-3">
+                        <x-status-alert></x-status-alert>
                         <!-- general form elements -->
                         <div class="card card-primary">
                             <div class="card-header">
@@ -64,9 +65,8 @@
                             </div>
                             <!-- /.card-header -->
                             <!-- form start -->
-                            <x-status-alert></x-status-alert>
                             
-                            <form action="{{ route('profiles.store') }}" method="POST">
+                            <form action="{{ route('profiles.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 
                                 <div class="card-body">
@@ -114,12 +114,9 @@
                                     <div class="form-group">
                                         <label for="photo">Profile Picture</label>
                                         <div class="input-group">
-                                            <div class="custom-file">
-                                                <input type="file" class="custom-file-input @error('photo')    
-                                                @enderror" id="photo">
-                                                <label class="custom-file-label" for="photo">Choose
-                                                    file</label>
-                                            </div>
+                                            <input type="file" class="form-control @error('photo')    
+                                            @enderror" id="photo" name="photo">
+                                            
                                             {{-- <div class="input-group-append">
                                                 <span class="input-group-text">Upload</span>
                                             </div> --}}

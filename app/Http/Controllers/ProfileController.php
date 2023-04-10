@@ -6,6 +6,7 @@ use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\PostProfile;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 
@@ -33,7 +34,7 @@ class ProfileController extends Controller
     public function store(PostProfile $request): RedirectResponse
     {
         $user = Auth::user();
-        $profile =$user->profile;
+        $profile = $user->profile;
         $profileData = $request->only(['address', 'phone']);
         $userData = $request->only('name');
         $user->update($userData);
@@ -42,7 +43,14 @@ class ProfileController extends Controller
         } else {
             $profile->update($profileData);
         }
-        
+
+        if ($request->file('photo')->isValid()) {
+            $disk = config('filesystems.default');
+            $path = $request->photo->store('', $disk);
+            $user->addMediaFromDisk($path, $disk)
+                ->toMediaCollection(User::AVATAR_COLLECTION);
+        }
+
         return back()->with([
             'status' => 'Profile successfully updated'
         ]);

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('active')->default(false);
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('user')->restrictOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->restrictOnDelete();
         });
     }
 
