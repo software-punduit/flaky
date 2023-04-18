@@ -6,6 +6,7 @@ use App\Models\Profile;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Laravel\Jetstream\HasProfilePhoto;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -24,9 +25,21 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     use TwoFactorAuthenticatable;
     use \Illuminate\Auth\MustVerifyEmail;
     use InteractsWithMedia;
+    use HasRoles;
 
 
     const AVATAR_COLLECTION = 'avatars';
+
+    const ADMIN = 'admin';
+
+    const SUPER_ADMIN = 'super admin';
+
+    const RESTUARANT_OWNER = 'restuarant owner';
+
+    const RESTUARANT_STAFF = 'restuarant staff';
+
+    const CUSTOMERS = 'customers';
+    
     /**
      * The attributes that are mass assignable.
      *
