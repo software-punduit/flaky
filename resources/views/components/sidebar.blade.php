@@ -40,10 +40,21 @@
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                 <li class="nav-item menu-open">
-                    <a href="{{ route('dashboard') }}" class="nav-link {{ Route::CurrentRouteName() === 'dashboard' ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}"
+                        class="nav-link {{ Route::CurrentRouteName() === 'dashboard' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
+                        </p>
+                    </a>
+
+                </li>
+                <li class="nav-item menu-open">
+                    <a href="{{ route('users.index') }}"
+                        class="nav-link {{ Route::CurrentRouteName() === 'users.index' ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Users
                         </p>
                     </a>
 
