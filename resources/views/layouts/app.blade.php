@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}">
+    @stack('css')
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -39,14 +40,21 @@
             <img class="animation__shake" src="{{ asset('dist/img/AdminLTELogo.png') }}" alt="AdminLTELogo"
                 height="60" width="60">
         </div>
-
-
-
+        
         <x-header-nav></x-header-nav>
         <x-sidebar></x-sidebar>
 
+        <!--Content Wrapper. Contains page content-->
 
-        {{ $slot }}
+        <div class="content-wrapper">
+            <!-- Main content-->
+            {{ $slot }}
+
+            <!-- / .content-->
+        </div>
+
+        <!-- /.content-wrapper -->
+       
         <footer class="main-footer">
             <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
             All rights reserved.
@@ -93,10 +101,11 @@
     <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('dist/js/adminlte.js') }}"></script>
-    <!-- AdminLTE for demo purposes -->
+    {{-- <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('dist/js/demo.js') }}"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{{ asset('dist/js/pages/dashboard.js') }}"></script>
+    <script src="{{ asset('dist/js/pages/dashboard.js') }}"></script> --}}
+    @stack('js')
 </body>
 
 </html>
