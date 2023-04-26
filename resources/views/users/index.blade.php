@@ -28,6 +28,7 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Active</th>
+                                        <th>Roles</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -45,6 +46,9 @@
                                                 class="{{ is_null($user->profile) ? 'text-danger' : ($user->profile->active ? 'text-success' : 'text-danger') }}">
                                                 {{ is_null($user->profile) ? 'No' : ($user->profile->active ? 'Yes' : 'No') }}
 
+                                            </td>
+                                            <td>
+                                                {{ $user->getRoleNames()->join(', ', ',and') }}
                                             </td>
                                             <td>
                                                 <button class="btn btn-primary" title="Activate">
@@ -92,5 +96,5 @@
                 }).buttons().container().appendTo('#users-table_wrapper .col-md-6:eq(0)');
             });
         </script>
-    @endpush  
+    @endpush
 </x-app-layout>

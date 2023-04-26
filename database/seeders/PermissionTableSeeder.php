@@ -14,25 +14,25 @@ class PermissionTableSeeder extends Seeder
      * Run the database seeds.
      * @return void
      */
-    public function run():void
+    public function run(): void
     {
         //Define the roles and permissions
 
         $seeds = [
-            User::ADMIN => [
-                'users.create.*',
-                'users.view.*',
-            ],
             User::SUPER_ADMIN => [
-               
+                'users.create,update,view,activate,deactivate',
+                'restuarants.view,update,activate,deactivate'
+            ],
+            User::ADMIN => [
+                'users.create,view',
+                'restuarants.view,update,activate,deactivate'
             ],
             User::RESTUARANT_OWNER => [
-                'restuarant-staff.*',
+                'restuarant-staff.create,update,view,activate,deactivate',
             ],
-            User::RESTUARANT_STAFF => [
-            ],
+            User::RESTUARANT_STAFF => [],
             User::CUSTOMERS => [
-                'restuarant.*',
+                'restuarant.create,update,view,activate,deactivate',
             ],
         ];
         //Populate the database roles
@@ -40,7 +40,7 @@ class PermissionTableSeeder extends Seeder
 
         foreach ($seeds as $roleName => $permissionNames) {
             $role = Role::firstOrCreate([
-             'name' => $roleName  
+                'name' => $roleName
             ]);
 
             foreach ($permissionNames as $permissionName) {
