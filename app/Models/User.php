@@ -79,6 +79,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
      */
     protected $appends = [
         'avatar_url',
+        'highest_role'
     ];
     /**
      * Get the profile associated with the User
@@ -104,4 +105,28 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
             get: fn () => $this->getFirstMediaUrl(self::AVATAR_COLLECTION)
         );
     }
+
+
+    protected function highestRole():Attribute
+    {
+        return Attribute::make(
+            get: function(){
+             if($this->hasRole(self::SUPER_ADMIN)){
+                return self::SUPER_ADMIN;
+            }else if($this->hasRole(self::ADMIN)){
+                return self::ADMIN;
+            }else if($this->hasRole(self::RESTUARANT_OWNER)){
+                return self::RESTUARANT_OWNER;
+            }else{
+                return self::CUSTOMERS;
+            }
+        
+        }
+    );
+
+    }
 }
+    
+
+
+
