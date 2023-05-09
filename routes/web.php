@@ -16,13 +16,9 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
-Route::resource('profiles', ProfileController::class);
-
-Route::resource('users', UserController::class);
-
-Route::get('/', function () {
-    return view('welcome');
-});
+   Route::get('/', function () {
+        return view('welcome');
+    });
 
 Route::middleware([
     'auth:sanctum',
@@ -32,4 +28,10 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::resource('profiles', ProfileController::class);
+
+    Route::resource('users', UserController::class);
+
+ 
 });

@@ -11,7 +11,7 @@ class UserPolicy
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
-    {
+    { //This is checking whether  a particular user login user have permission to view users
         return $user->can('users.view');
     }
 
@@ -36,7 +36,8 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        //
+        return $user->can('users.update')
+            || $user->id === $model->id;
     }
 
     /**

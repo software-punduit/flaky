@@ -3,13 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Contracts\View\View;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Requests\PutUser;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 
 class UserController extends Controller
 {
+    
     public function __construct(){
         $this->authorizeResource(User::class, 'user');
     }
@@ -18,7 +22,8 @@ class UserController extends Controller
      */
     public function index(): Response|View
     {
-        $users = User::all();
+        $user = Auth::user();
+        $users = User::where('id', '!=', $user->id)->get();
 
         return view('users.index', compact('users'));
     }
@@ -41,8 +46,12 @@ class UserController extends Controller
 
     /**
      * Display the specified resource.
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     * 
      */
-    public function show(string $id): Response
+    public function show( $id): Response
     {
         //
     }
@@ -58,9 +67,24 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id): RedirectResponse
+    public function update(PutUser $request, User $user): RedirectResponse
     {
-        //
+        $data = $request->validated();
+
+        $profile = $user->profile;
+
+        //if the profile doesn't exist
+        if(is_null($profile)){
+            //create a new one
+            $user->profile()->create($data);
+        }else{
+            //update the existing profile
+            $profile->update($data);
+        }
+
+        return back()->with([
+            'status' => 'Updated successfully'
+        ]);
     }
 
     /**

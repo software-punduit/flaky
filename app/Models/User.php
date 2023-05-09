@@ -39,7 +39,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     const RESTUARANT_STAFF = 'restuarant staff';
 
     const CUSTOMERS = 'customers';
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -79,7 +79,8 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
      */
     protected $appends = [
         'avatar_url',
-        'highest_role'
+        'highest_role',
+        'active'
     ];
     /**
      * Get the profile associated with the User
@@ -107,26 +108,30 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     }
 
 
-    protected function highestRole():Attribute
+    protected function highestRole(): Attribute
     {
         return Attribute::make(
-            get: function(){
-             if($this->hasRole(self::SUPER_ADMIN)){
-                return self::SUPER_ADMIN;
-            }else if($this->hasRole(self::ADMIN)){
-                return self::ADMIN;
-            }else if($this->hasRole(self::RESTUARANT_OWNER)){
-                return self::RESTUARANT_OWNER;
-            }else{
-                return self::CUSTOMERS;
-            }
-        
-        }
-    );
+            get: fn () => is_null($this->profile) ? false : $this->profile->active
+        );
+    }
 
+    protected function active(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => is_null($this->profile) ? false : $this->profile->active
+        );
+    }
+
+    public function getHighestRole()
+    {
+        if ($this->hasRole(self::SUPER_ADMIN)) {
+            return self::SUPER_ADMIN;
+        } else if ($this->hasRole(self::ADMIN)) {
+            return self::ADMIN;
+        } else if ($this->hasRole(self::RESTUARANT_OWNER)) {
+            return self::RESTUARANT_OWNER;
+        } else {
+            return self::CUSTOMERS;
+        }
     }
 }
-    
-
-
-

@@ -16,6 +16,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
+                    <x-status-alert></x-status-alert>
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Users</h3>
@@ -42,18 +43,31 @@
                                             <td>
                                                 {{ $user->email }}
                                             </td>
-                                            <td
-                                                class="{{ is_null($user->profile) ? 'text-danger' : ($user->profile->active ? 'text-success' : 'text-danger') }}">
-                                                {{ is_null($user->profile) ? 'No' : ($user->profile->active ? 'Yes' : 'No') }}
+                                            <td class="{{ $user->active ? 'text-success' : 'text-danger' }}">
+                                                {{ $user->active ? 'Yes' : 'No' }}
 
                                             </td>
                                             <td>
-                                                {{ $user->getRoleNames()->join(', ', ',and') }}
+                                                {{ $user->getRoleNames()->join(', ', ', and') }}
                                             </td>
                                             <td>
-                                                <button class="btn btn-primary" title="Activate">
-                                                    <i class="fas fa-power-off"></i>
-                                                </button>
+                                                <form action="{{ route('users.update', $user->id) }}" method="post"
+                                                    style="display: inline-block">
+                                                    @csrf
+                                                    @method('put')
+                                                    @if ($user->active)
+                                                        <input type="hidden" name="active" value="0">
+                                                        <button class="btn btn-danger" title="Deactivate"
+                                                            type="submit">
+                                                            <i class="fas fa-power-off"></i>
+                                                        </button>
+                                                    @else
+                                                        <input type="hidden" name="active" value="1">
+                                                        <button class="btn btn-primary" title="Activate" type="submit">
+                                                            <i class="fas fa-power-off"></i>
+                                                        </button>
+                                                    @endif
+                                                </form>
                                                 <button class="btn btn-secondary" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
