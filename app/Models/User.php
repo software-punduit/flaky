@@ -111,7 +111,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     protected function highestRole(): Attribute
     {
         return Attribute::make(
-            get: fn () => is_null($this->profile) ? false : $this->profile->active
+            get: fn () => $this->getHighestRole()
         );
     }
 

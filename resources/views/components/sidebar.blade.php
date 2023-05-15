@@ -16,7 +16,10 @@
             </div>
             <div class="info">
                 <a href="{{ route('profile.show') }}" class="d-block">
-                    {{ Auth::user()->name }}
+                    {{ Auth::user()->name }}<br>
+                    <span class="text-secondary">
+                        {{ Auth::user()->highest_role }}
+                    </span>
                 </a>
             </div>
         </div>
@@ -129,7 +132,7 @@
                         <p>Level 1</p>
                     </a>
                 </li>
-              <hr class="bg-secondary" width="100%">
+                <hr class="bg-secondary" width="100%">
                 <li class="nav-item bg-danger">
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
