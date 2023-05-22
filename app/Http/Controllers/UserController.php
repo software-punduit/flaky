@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\User;
 use App\Models\Profile;
 use Illuminate\Http\Request;
@@ -13,8 +14,9 @@ use Illuminate\Http\RedirectResponse;
 
 class UserController extends Controller
 {
-    
-    public function __construct(){
+
+    public function __construct()
+    {
         $this->authorizeResource(User::class, 'user');
     }
     /**
@@ -47,11 +49,11 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      * 
-     * @param int $id
+     * @param user $user
      * @return \Illuminate\Http\Response
      * 
      */
-    public function show( $id): Response
+    public function show($id): Response
     {
         //
     }
@@ -59,9 +61,9 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id): Response
+    public function edit(User $user): Response|View
     {
-        //
+        return view('users.edit', compact('user'));
     }
 
     /**
@@ -69,17 +71,25 @@ class UserController extends Controller
      */
     public function update(PutUser $request, User $user): RedirectResponse
     {
-        $data = $request->validated();
+        // Update User name
+        // *1. Validate the name field of the form data
+        // *2. Get the name from the request object
+        // *3. Update the User's name with the new name
+
+        $userData = $request->only('name');
+        $user->update($userData);
+
+        $profileData = $request->only('active');
 
         $profile = $user->profile;
 
         //if the profile doesn't exist
-        if(is_null($profile)){
+        if (is_null($profile)) {
             //create a new one
-            $user->profile()->create($data);
-        }else{
+            $user->profile()->create($profileData);
+        } else {
             //update the existing profile
-            $profile->update($data);
+            $profile->update($profileData);
         }
 
         return back()->with([

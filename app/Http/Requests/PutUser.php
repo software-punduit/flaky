@@ -22,7 +22,8 @@ class PutUser extends FormRequest
     public function rules():array
     {
         return [
-            'active' => 'sometimes|boolean'
+            'active' => 'sometimes|boolean',
+            'name' => 'sometimes|string|max:100'
         ];
     }
 }
