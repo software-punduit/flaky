@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Requests\PostUser;
 use App\Models\User;
 use App\Models\Profile;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\PutUser;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -33,17 +35,37 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): Response
+    public function create(): Response|View
     {
-        //
+        return view('users.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(PostUser $request): RedirectResponse
     {
-        //
+        //Validate the request
+        //Get the formdata
+        //Create a new user record with the data
+
+        $userData = $request->except('password');
+        $userData = array_merge($userData, ['password' => Hash::make($request->password)]);
+
+        $user = User::create($userData);
+
+        $user->assignRole(User::ADMIN);
+
+        //$user->profile()->create(['active' => Profile::ACTIVE]);
+
+        //Dispatch the event by calling the function
+
+        event(new Registered($user));
+
+        return redirect(route('users.index'))->with([
+            'status' => 'User Successfully Created'
+        ]);
+        
     }
 
     /**

@@ -33,7 +33,7 @@ class CreateNewUser implements CreatesNewUsers
             'password' => Hash::make($input['password']),
         ]);
 
-        $user->profile->create(['active' => Profile::ACTIVE]);
+        // $user->profile()->create(['active' => Profile::ACTIVE]);
 
         $user->assignRole(User::CUSTOMERS);
         
