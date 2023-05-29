@@ -1,4 +1,4 @@
-<x-app-layout>
+{{-- <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Profile') }}
@@ -42,4 +42,108 @@
             @endif
         </div>
     </div>
+</x-app-layout> --}}
+<x-app-layout>
+    <x-header-nav></x-header-nav>
+    <x-sidebar></x-sidebar>
+
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <x-content-header title="Profile"></x-content-header>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <x-status-alert></x-status-alert>
+                        <!-- general form elements -->
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Edit Profile</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            
+                            <form action="{{ route('profiles.store') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                            id="name" placeholder="Enter name"
+                                            value="{{ old('name', Auth::user()->name) }}" name="name" required>
+                                        @error('name')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email address</label>
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                            id="email" placeholder="Enter email" value="{{ old('email', Auth::user()->email) }}" name="email" readonly>
+                                        @error('email')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone">Phone</label>
+                                        <input type="tel" class="form-control @error('phone') is-invalid @enderror" id="phone"
+                                            placeholder=" Enter Phone Number" name="phone" value="{{ old('phone', is_null(Auth::user()->profile) ? '' : Auth::user()->profile->phone) }}">
+                                            @error('phone')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="address">Address</label>
+                                        <textarea class="form-control @error('address') is-invalid @enderror" id="address"
+                                            placeholder=" Enter Address" name="address" value="{{ old('address', is_null(Auth::user()->profile) ? '' : Auth::user()->profile->address) }}">{{ old('address', is_null(Auth::user()->profile) ? '' : Auth::user()->profile->address) }}</textarea>
+                                            @error('address')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="photo">Profile Picture</label>
+                                        <div class="input-group">
+                                            <input type="file" class="form-control @error('photo')    
+                                            @enderror" id="photo" name="photo">
+                                            
+                                            {{-- <div class="input-group-append">
+                                                <span class="input-group-text">Upload</span>
+                                            </div> --}}
+                                            @error('photo')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.card -->
+
+                        <!-- general form elements -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
 </x-app-layout>
