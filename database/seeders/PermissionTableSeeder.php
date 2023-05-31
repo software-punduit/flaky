@@ -21,18 +21,18 @@ class PermissionTableSeeder extends Seeder
         $seeds = [
             User::SUPER_ADMIN => [
                 'users.create,update,view,activate,deactivate',
-                'restuarants.view,update,activate,deactivate'
+                'restaurants.view,update,activate,deactivate'
             ],
             User::ADMIN => [
                 'users.create,view',
-                'restuarants.view,update,activate,deactivate'
+                'restaurants.view,update,activate,deactivate'
             ],
             User::RESTUARANT_OWNER => [
-                'restuarant-staff.create,update,view,activate,deactivate',
+                'restaurant-staff.create,update,view,activate,deactivate',
             ],
             User::RESTUARANT_STAFF => [],
             User::CUSTOMERS => [
-                'restuarant.create,update,view,activate,deactivate',
+                'restaurants.create,update,view,activate,deactivate',
             ],
         ];
         //Populate the database roles
