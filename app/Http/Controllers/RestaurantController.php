@@ -22,8 +22,8 @@ class RestaurantController extends Controller
     {
 
         $user = Auth::user();
-        $restaurants = $user->restaurants;
-        return view('restaurants.index', compact('restaurants') );
+        $restaurants= $user->restaurants;
+        return view('restaurants.index', compact('restaurants'));
     }
 
     /**
