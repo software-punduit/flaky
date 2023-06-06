@@ -37,7 +37,7 @@ class RestaurantPolicy
      */
     public function update(User $user, Restaurant $restaurant): bool
     {
-        //
+        return $user->can('restaurants.update') || $user->id === $restaurant->$user->id;
     }
 
     /**
