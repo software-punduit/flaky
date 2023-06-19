@@ -92,9 +92,12 @@ class RestaurantStaffController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(RestaurantStaff $restaurantStaff): Response
+    public function edit(RestaurantStaff $restaurantStaff): Response|View
     {
-        //
+        $restaurantOwner = Auth::user();
+        $restaurants = $restaurantOwner->restaurants;
+        return view('restaurant-staff.edit', compact('restaurantStaff', 'restaurants'));
+
     }
 
     /**
@@ -102,7 +105,33 @@ class RestaurantStaffController extends Controller
      */
     public function update(Request $request, RestaurantStaff $restaurantStaff): RedirectResponse
     {
-        //
+        //Validate the request
+        //Get the data from the formrequest
+        //Update the restaurant staff record
+
+        DB::beginTransaction();
+
+        try {
+            $restaurantStaffData = $request->only('restaurant_id');
+            $staffData = $request->only('name');
+
+            if($request->has('password')) {
+                $staffData = array_merge($staffData, [
+                    'password' => Hash::make($request->password)
+                ]);
+            }
+
+            $restaurantStaff->update($restaurantStaffData);
+            $restaurantStaff->staff()->update($staffData);
+            DB::commit();
+
+            return Redirect(route('restaurant-staff.index'))->with([
+                'status' => 'Restaurant Staff Updated Successfully'
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**

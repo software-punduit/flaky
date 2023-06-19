@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-content-header title="Restaurants"></x-content-header>
+    <x-content-header title="Restaurant Staff"></x-content-header>
 
     <!-- Main content -->
     <section class="content">
@@ -15,7 +15,7 @@
                         <!-- /.card-header -->
                         <!-- form start -->
 
-                        <form action="{{ route('restaurants.update', $restaurant->id) }}" method="POST">
+                        <form action="{{ route('restaurant-staff.update', $restaurantStaff->id) }}" method="POST">
                             @csrf
                             @method('put')
 
@@ -23,7 +23,7 @@
                                 <div class="form-group">
                                     <label for="name">Name</label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                        id="name" placeholder="Enter name" value="{{ old('name', $restaurant->name) }}"
+                                        id="name" placeholder="Enter name" value="{{ old('name', $restaurantStaff->staff->name) }}"
                                         name="name" required>
                                     @error('name')
                                         <div class="invalid-feedback">
@@ -32,21 +32,10 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label for="phone">Phone</label>
-                                    <input type="tel" class="form-control @error('phone') is-invalid @enderror"
-                                        id="phone" placeholder="Enter Phone" value="{{ old('phone', $restaurant->phone) }}"
-                                        name="phone" required>
-                                    @error('phone')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                                <div class="form-group">
                                     <label for="email">Email</label>
                                     <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                        id="email" placeholder="Enter email" value="{{ old('email', $restaurant->email) }}"
-                                        name="email" required>
+                                        id="email" placeholder="Enter email" value="{{ old('email') }}"
+                                        name="email" required readonly>
                                     @error('email')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -54,20 +43,42 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <textarea class="form-control @error('description') is-invalid @enderror" id="description"
-                                        placeholder="Enter Description" name="description" required>{{ old('description', $restaurant->description) }}</textarea>
-                                    @error('description')
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                        id="password" placeholder="Enter password" value="{{ old('password') }}"
+                                        name="password">
+                                    @error('password')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label for="address">Address</label>
-                                    <textarea class="form-control @error('address') is-invalid @enderror" id="address" placeholder="Enter address"
-                                        name="address" required>{{ old('address', $restaurant->address) }}</textarea>
-                                    @error('address')
+                                    <label for="password_confirmation">Confirm Password</label>
+                                    <input type="password"
+                                        class="form-control @error('password_confirmation') is-invalid @enderror"
+                                        id="password_confirmation" placeholder="Confirm Password"
+                                        value="{{ old('password_confirmation') }}" name="password_confirmation">
+                                    @error('password_confirmation')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="restaurant_id">Restaurant</label>
+                                    <select class="form-control" @error('restaurant_id')is-invalid @enderror
+                                        name='restaurant_id' id="restaurant_id" required>
+                                        @foreach ($restaurants as $restaurant)
+                                            <option value="{{ $restaurant->id }}"
+                                                {{ old('restaurant_id', $restaurantStaff->restaurant->id) ==
+                                                $restaurant->id ? 'selected' : '' }}>
+                                                {{ $restaurant->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    @error('restaurant_id')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
