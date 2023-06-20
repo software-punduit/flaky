@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-content-header title="Profile"></x-content-header>
+    <x-content-header title="Restaurant Staff"></x-content-header>
 
     <!-- Main content -->
     <section class="content">
@@ -10,20 +10,20 @@
                     <!-- general form elements -->
                     <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title">Edit Profile</h3>
+                            <h3 class="card-title">Create Restaurant</h3>
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
 
-                        <form action="{{ route('profiles.store') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('restaurant-staff.store') }}" method="POST">
                             @csrf
 
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="name">Name</label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                        id="name" placeholder="Enter name"
-                                        value="{{ old('name', Auth::user()->name) }}" name="name" required>
+                                        id="name" placeholder="Enter name" value="{{ old('name') }}"
+                                        name="name" required>
                                     @error('name')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -31,10 +31,10 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label for="email">Email address</label>
+                                    <label for="email">Email</label>
                                     <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                        id="email" placeholder="Enter email"
-                                        value="{{ old('email', Auth::user()->email) }}" name="email" readonly>
+                                        id="email" placeholder="Enter email" value="{{ old('email') }}"
+                                        name="email" required>
                                     @error('email')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -42,43 +42,46 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label for="phone">Phone</label>
-                                    <input type="tel" class="form-control @error('phone') is-invalid @enderror"
-                                        id="phone" placeholder=" Enter Phone Number" name="phone"
-                                        value="{{ old('phone', is_null(Auth::user()->profile) ? '' : Auth::user()->profile->phone) }}">
-                                    @error('phone')
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                        id="password" placeholder="Enter password" value="{{ old('password') }}"
+                                        name="password" required>
+                                    @error('password')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label for="address">Address</label>
-                                    <textarea class="form-control @error('address') is-invalid @enderror" id="address" placeholder=" Enter Address"
-                                        name="address" value="{{ old('address', is_null(Auth::user()->profile) ? '' : Auth::user()->profile->address) }}">{{ old('address', is_null(Auth::user()->profile) ? '' : Auth::user()->profile->address) }}</textarea>
-                                    @error('address')
+                                    <label for="password_confirmation">Confirm Password</label>
+                                    <input type="password"
+                                        class="form-control @error('password_confirmation') is-invalid @enderror"
+                                        id="password_confirmation" placeholder="Confirm Password"
+                                        value="{{ old('password_confirmation') }}" name="password_confirmation"
+                                        required>
+                                    @error('password_confirmation')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label for="photo">Profile Picture</label>
-                                    <div class="input-group">
-                                        <input type="file"
-                                            class="form-control @error('photo')    
-                                            @enderror"
-                                            id="photo" name="photo">
+                                    <label for="restaurant_id">Restaurant</label>
+                                    <select class="form-control" @error('restaurant_id')is-invalid @enderror
+                                        name='restaurant_id' id="restaurant_id" required>
+                                        @foreach ($restaurants as $restaurant)
+                                            <option value="{{ $restaurant->id }}"
+                                                {{ old('restaurant_id') == $restaurant->id ? 'selected' : '' }}>
+                                                {{ $restaurant->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
 
-                                        {{-- <div class="input-group-append">
-                                                <span class="input-group-text">Upload</span>
-                                            </div> --}}
-                                        @error('photo')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
+                                    @error('restaurant_id')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
                             </div>
                             <!-- /.card-body -->
@@ -90,9 +93,11 @@
                     </div>
                     <!-- /.card -->
 
-                    <!-- general form elements -->
+
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- /.content -->
 </x-app-layout>

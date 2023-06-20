@@ -44,13 +44,15 @@ class ProfileController extends Controller
             $profile->update($profileData);
         }
 
-        if ($request->file('photo')->isValid()) {
-            $disk = config('filesystems.default');
-            $path = $request->photo->store('', $disk);
-            $user->addMediaFromDisk($path, $disk)
-                ->toMediaCollection(User::AVATAR_COLLECTION);
+        if ($request->has('photo')) {
+            if ($request->file('photo')->isValid()) {
+                $disk = config('filesystems.default');
+                $path = $request->photo->store('', $disk);
+                $user->addMediaFromDisk($path, $disk)
+                    ->toMediaCollection(User::AVATAR_COLLECTION);
+            }
         }
-
+        
         return back()->with([
             'status' => 'Profile successfully updated'
         ]);

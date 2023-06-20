@@ -76,6 +76,17 @@
                         </a>
                     </li>
                 @endcan
+                @can('restaurant-staff.view')
+                    <li class="nav-item">
+                        <a href="{{ route('restaurant-staff.index') }}"
+                            class="nav-link {{ Str::startsWith(Route::current()->uri(), 'restaurant-staff') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-user-tie"></i>
+                            <p>
+                                Restaurant Staff
+                            </p>
+                        </a>
+                    </li>
+                @endcan
 
 
                 <li class="nav-header">MULTI LEVEL EXAMPLE</li>
