@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\RestaurantTableController;
+use App\Models\RestaurantTable;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
@@ -37,6 +39,8 @@ Route::middleware([
     Route::resource('restaurants', RestaurantController::class);
 
     Route::resource('restaurant-staff', RestaurantStaffController::class);
+
+    Route::resource('restaurant-tables', RestaurantTableController::class);
 
  
 });
