@@ -13,14 +13,15 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\PostRestuarantTable;
+use App\Http\Requests\PutRestaurantTable;
 
 class RestaurantTableController extends Controller
 {
     use UploadsPhoto;
 
-    function __construct() {
+    function __construct()
+    {
         $this->authorizeResource(RestaurantTable::class, 'restaurant_table');
-        
     }
     /**
      * Display a listing of the resource.
@@ -28,16 +29,17 @@ class RestaurantTableController extends Controller
     public function index(): Response|View
     {
         $user = Auth::user();
-        if($user->hasRole(User::RESTUARANT_OWNER)) {
+        if ($user->hasRole(User::RESTUARANT_OWNER)) {
             $restaurantTables = $user->restaurantTables;
-        }else{
+        } else {
             $restaurantIds = RestaurantStaff::where('staff_id', $user->id)
-            ->pluck('restaurant_id');
-            $restaurantTables = RestaurantTable::whereHas('restaurant',
-            function($query)use($restaurantIds){
-                $query->whereIn('restaurant_id', $restaurantIds);
-            
-        })->get();
+                ->pluck('restaurant_id');
+            $restaurantTables = RestaurantTable::whereHas(
+                'restaurant',
+                function ($query) use ($restaurantIds) {
+                    $query->whereIn('restaurant_id', $restaurantIds);
+                }
+            )->get();
         }
         return view('restaurant-tables.index', compact('restaurantTables'));
     }
@@ -65,12 +67,12 @@ class RestaurantTableController extends Controller
 
         try {
             $restaurantTableData = $request->only([
-                'name', 
+                'name',
                 'restaurant_id',
                 'reservation_fee'
             ]);
             $restaurantTable = RestaurantTable::create($restaurantTableData);
-    
+
             $this->uploadPhoto($request, 'photo', $restaurantTable, RestaurantTable::MEDIA_COLLECTION);
             DB::commit();
             return redirect(route('restaurant-tables.index'))->with([
@@ -80,13 +82,6 @@ class RestaurantTableController extends Controller
             DB::rollBack();
             throw $th;
         }
-
-       
-        
-
-
-
-   
     }
 
     /**
@@ -100,17 +95,29 @@ class RestaurantTableController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(RestaurantTable $restaurantTable): Response
+    public function edit(RestaurantTable $restaurantTable): Response|View
     {
-        //
+
+        $user = Auth::user();
+        $restaurants = $user->restaurants;
+        return view('restaurant-tables.edit', compact('restaurantTable', 'restaurants'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, RestaurantTable $restaurantTable): RedirectResponse
+    public function update(PutRestaurantTable $request, RestaurantTable $restaurantTable): RedirectResponse
     {
-        //
+        //validate the request
+        //Get the data from the form request
+        //Update the restaurant table record
+
+        $restaurantTableData = $request->only('active');
+        $restaurantTable->update($restaurantTableData);
+
+        return redirect(route('restaurant-tables.index'))->with([
+            'status' => 'Restaurant Table Updated Successfully'
+        ]);
     }
 
     /**

@@ -90,7 +90,7 @@
                 @can('table.view')
                     <li class="nav-item">
                         <a href="{{ route('restaurant-tables.index') }}"
-                            class="nav-link {{ Str::startsWith(Route::current()->uri(), 'restaurant-staff') ? 'active' : '' }}">
+                            class="nav-link {{ Str::startsWith(Route::current()->uri(), 'restaurant-tables') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-chair"></i>
                             <p>
                                 Restaurant Table
