@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Profile;
+use App\Traits\UploadsPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\PostProfile;
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 
 class ProfileController extends Controller
 {
+    use UploadsPhoto;
+
     /**
      * Display a listing of the resource.
      */
@@ -33,29 +37,32 @@ class ProfileController extends Controller
      */
     public function store(PostProfile $request): RedirectResponse
     {
-        $user = Auth::user();
-        $profile = $user->profile;
-        $profileData = $request->only(['address', 'phone']);
-        $userData = $request->only('name');
-        $user->update($userData);
-        if ($profile === null) {
-            $user->profile()->create($profileData);
-        } else {
-            $profile->update($profileData);
-        }
+        DB::beginTransaction();
 
-        if ($request->has('photo')) {
-            if ($request->file('photo')->isValid()) {
-                $disk = config('filesystems.default');
-                $path = $request->photo->store('', $disk);
-                $user->addMediaFromDisk($path, $disk)
-                    ->toMediaCollection(User::AVATAR_COLLECTION);
+        try {
+
+            $user = Auth::user();
+            $profile = $user->profile;
+            $profileData = $request->only(['address', 'phone']);
+            $userData = $request->only('name');
+            $user->update($userData);
+            if ($profile === null) {
+                $user->profile()->create($profileData);
+            } else {
+                $profile->update($profileData);
             }
+
+            $this->uploadPhoto($request, 'photo', $user, User::AVATAR_COLLECTION);
+
+            DB::commit();
+
+            return back()->with([
+                'status' => 'Profile successfully updated'
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
         }
-        
-        return back()->with([
-            'status' => 'Profile successfully updated'
-        ]);
     }
 
     /**
