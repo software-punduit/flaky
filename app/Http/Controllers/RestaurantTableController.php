@@ -110,14 +110,27 @@ class RestaurantTableController extends Controller
     {
         //validate the request
         //Get the data from the form request
-        //Update the restaurant table record
+        //Update the restaurant table 
+        DB::beginTransaction();
 
-        $restaurantTableData = $request->only('active');
-        $restaurantTable->update($restaurantTableData);
+        try {
+            $restaurantTableData = $request->only([
+                'active',
+                'name',
+                'reservation_fee',
+                'restaurant_id'
+            ]);
+            $restaurantTable->update($restaurantTableData);
+            $this->uploadPhoto($request, 'photo', $restaurantTable, RestaurantTable::MEDIA_COLLECTION);
+            DB::commit();
 
-        return redirect(route('restaurant-tables.index'))->with([
-            'status' => 'Restaurant Table Updated Successfully'
-        ]);
+            return redirect(route('restaurant-tables.index'))->with([
+                'status' => 'Restaurant Table Updated Successfully'
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**

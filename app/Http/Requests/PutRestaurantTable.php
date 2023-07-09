@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PutRestaurantTable extends FormRequest
@@ -21,8 +22,19 @@ class PutRestaurantTable extends FormRequest
      */
     public function rules(): array
     {
+        $restaurantTable = $this->route('restaurant_table');
         return [
-            'active' => 'sometimes|boolean'
+            'active' => 'sometimes|boolean',
+            'name' => [
+                'sometimes',
+                'string',
+                'max:100',
+                Rule::unique('restaurant_tables', 'name')->ignore($restaurantTable->id),
+            ],
+            'reservation_fee' => 'numeric|min:0|sometimes',
+            'restaurant_id' => 'sometimes|exists:restaurants,id',
+            'photo' => 'sometimes|mimes:png,jpg,jpeg|max:1024'
         ];
+         
     }
 }
