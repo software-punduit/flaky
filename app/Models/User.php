@@ -164,4 +164,14 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         return $this->hasManyThrough(RestaurantTable::class, Restaurant::class);
 
     }
+
+    /**
+     * Get all of the comments for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function menus(): HasMany
+    {
+        return $this->hasMany(Menu::class, 'restaurant_owner_id');
+    }
 }

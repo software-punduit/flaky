@@ -30,9 +30,11 @@ class PermissionTableSeeder extends Seeder
             User::RESTUARANT_OWNER => [
                 'restaurant-staff.create,update,view,activate,deactivate',
                 'table.create,update,view',
+                'menu.create,update,view'
             ],
             User::RESTUARANT_STAFF => [
                 'table.view',
+                'menu.view'
             ],
             User::CUSTOMERS => [
                 'restaurants.create,update,view,activate,deactivate',

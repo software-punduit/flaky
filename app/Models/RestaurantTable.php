@@ -51,8 +51,8 @@ class RestaurantTable extends Model implements HasMedia
 
     protected function reservationFee():Attribute {
         return Attribute::make(
-            set:fn (string $value) => ($value * SELF::PENCE_TO_POUNDS),
-            get:fn (string $value) => ($value / SELF::PENCE_TO_POUNDS),
+            set:fn (string $value) => ($value * CONSTANTS::PENCE_TO_POUNDS),
+            get:fn (string $value) => ($value / CONSTANTS::PENCE_TO_POUNDS),
         );
     }
 }
