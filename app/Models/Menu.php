@@ -68,6 +68,6 @@ class Menu extends Model implements HasMedia
      */
     public function restaurant(): BelongsTo
     {
-        return $this->belongsTo(Menu::class);
+        return $this->belongsTo(Restaurant::class);
     }
 }
