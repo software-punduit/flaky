@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PostMenu;
 use App\Models\Menu;
+use App\Models\User;
 use App\Traits\UploadsPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Requests\PutMenu;
+use App\Http\Requests\PostMenu;
+use App\Models\RestaurantStaff;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -14,8 +17,8 @@ use Illuminate\Http\RedirectResponse;
 
 class MenuController extends Controller
 {
-    use UploadsPhoto; 
-    
+    use UploadsPhoto;
+
     public function __construct()
     {
         $this->authorizeResource(Menu::class, 'menu');
@@ -26,9 +29,20 @@ class MenuController extends Controller
     public function index(): Response|View
     {
         $user = Auth::user();
-        $menus = $user->menus;
-        return view('menus.index', compact('menus'));
-    }
+        if ($user->hasRole(User::RESTUARANT_OWNER)) {
+            $menus = $user->menus;
+        } else {
+            $restaurantIds = RestaurantStaff::where('staff_id', $user->id)
+                ->pluck('restaurant_id');
+            $menus = Menu::whereHas('restaurant', function ($query) use ($restaurantIds) {
+
+                $query->whereIn('restaurant_id', $restaurantIds);
+            })->get();
+        }
+
+            return view('menus.index', compact('menus'));
+     }
+    
 
     /**
      * Show the form for creating a new resource.
@@ -79,17 +93,43 @@ class MenuController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Menu $menu): Response
+    public function edit(Menu $menu): Response|View
     {
-        //
+        $restaurants = Auth::user()->restaurants;
+
+        return view('menus.edit', compact('menu', 'restaurants'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Menu $menu): RedirectResponse
+    public function update(PutMenu $request, Menu $menu): RedirectResponse
     {
-        //
+        //validate the request
+        //Get the form data
+        //update the menu data
+        DB::beginTransaction();
+
+        try {
+            $menuData = $request->only([
+                'name',
+                'price',
+                'restaurant_id',
+                'photo',
+                'active'
+            ]);
+            $menu->update($menuData);
+            $this->uploadPhoto($request, 'photo', $menu, Menu::MEDIA_COLLECTION);
+
+            DB::commit();
+
+            return redirect(route('menus.index'))->with([
+                'status' => 'Menu Updated Successfully'
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**

@@ -22,11 +22,14 @@
                             <h3 class="card-title">Menu</h3>
 
                             <div class="card-tools">
-                                <a href="{{ route('menus.create') }}" type="button" title="Add Menus"
-                                    class="btn btn-link">
-                                    <i class="fas fa-plus"></i>
-                                    <span class="d-none d-lg-inline">Add Menus</span>
-                                </a>
+                                @can('menu.create')
+                                    <a href="{{ route('menus.create') }}" type="button" title="Add Menus"
+                                        class="btn btn-link">
+                                        <i class="fas fa-plus"></i>
+                                        <span class="d-none d-lg-inline">Add Menus</span>
+                                    </a>
+                                @endcan
+
                             </div>
                         </div>
 
@@ -45,7 +48,7 @@
                                 </thead>
 
                                 <tbody>
-                                @foreach ($menus as $menu)
+                                    @foreach ($menus as $menu)
                                         <tr>
                                             <td>
                                                 {{ $menu->restaurant->name }}
@@ -66,28 +69,30 @@
                                             </td>
 
                                             <td>
-                                                <form action="{{ route('menus.update', $menu->id) }}" method="post"
-                                                    style="display: inline-block">
-                                                    @csrf
-                                                    @method('put')
-                                                    @if ($menu->active)
-                                                        <input type="hidden" name="active" value="0">
-                                                        <button class="btn btn-danger" title="Deactivate"
-                                                            type="submit">
-                                                            <i class="fas fa-power-off"></i>
-                                                        </button>
-                                                    @else
-                                                        <input type="hidden" name="active" value="1">
-                                                        <button class="btn btn-primary" title="Activate" type="submit">
-                                                            <i class="fas fa-power-off"></i>
-                                                        </button>
-                                                    @endif
-                                                </form>
+                                                @can('menu.update')
+                                                    <form action="{{ route('menus.update', $menu->id) }}" method="post"
+                                                        style="display: inline-block">
+                                                        @csrf
+                                                        @method('put')
+                                                        @if ($menu->active)
+                                                            <input type="hidden" name="active" value="0">
+                                                            <button class="btn btn-danger" title="Deactivate"
+                                                                type="submit">
+                                                                <i class="fas fa-power-off"></i>
+                                                            </button>
+                                                        @else
+                                                            <input type="hidden" name="active" value="1">
+                                                            <button class="btn btn-primary" title="Activate" type="submit">
+                                                                <i class="fas fa-power-off"></i>
+                                                            </button>
+                                                        @endif
+                                                    </form>
 
-                                                <a class="btn btn-secondary"
-                                                    href="{{ route('menus.edit', $menu->id) }}" title="Edit">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
+                                                    <a class="btn btn-secondary"
+                                                        href="{{ route('menus.edit', $menu->id) }}" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach
