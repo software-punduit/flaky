@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RestaurantTableController;
 use App\Models\RestaurantTable;
 use Illuminate\Support\Facades\Route;
@@ -42,5 +43,6 @@ Route::middleware([
 
     Route::resource('restaurant-tables', RestaurantTableController::class);
 
+    Route::resource('menus', MenuController::class);
  
 });

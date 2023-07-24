@@ -98,6 +98,17 @@
                         </a>
                     </li>
                 @endcan
+                @can('menu.view')
+                    <li class="nav-item">
+                        <a href="{{ route('menus.index') }}"
+                            class="nav-link {{ Str::startsWith(Route::current()->uri(), 'menus') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-clipboard"></i>
+                            <p>
+                                Menus
+                            </p>
+                        </a>
+                    </li>
+                @endcan
 
 
                 <li class="nav-header">MULTI LEVEL EXAMPLE</li>
