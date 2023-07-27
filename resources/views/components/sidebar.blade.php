@@ -109,6 +109,17 @@
                         </a>
                     </li>
                 @endcan
+                @can('order.view')
+                    <li class="nav-item">
+                        <a href="{{ route('orders.index') }}"
+                            class="nav-link {{ Str::startsWith(Route::current()->uri(), 'orders') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-shopping-cart"></i>
+                            <p>
+                                Orders
+                            </p>
+                        </a>
+                    </li>
+                @endcan
 
 
                 <li class="nav-header">MULTI LEVEL EXAMPLE</li>

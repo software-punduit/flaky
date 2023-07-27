@@ -18,6 +18,7 @@ class Menu extends Model implements HasMedia
     use InteractsWithMedia;
 
     const MEDIA_COLLECTION = 'menu-items';
+    const ACTIVE = 1;
 
     protected $fillable = [
         'restaurant_id',
@@ -69,5 +70,9 @@ class Menu extends Model implements HasMedia
     public function restaurant(): BelongsTo
     {
         return $this->belongsTo(Restaurant::class);
+    }
+
+    public function scopeActive($query){
+        return $query->where('active', self::ACTIVE);
     }
 }
