@@ -18,8 +18,30 @@
                         <form action="{{ route('orders.store') }}" method="POST">
                             @csrf
 
-                            <div class="card-body cart">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 cart">
+                                        
+                                    </div>
+                                    <div class="col-md-12">
+                                        <hr width="100%">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <strong>
+                                                    Total:
+                                                </strong>
+                                            </div>
+                                            <div class="col-md-12">
+                                                £
+                                                <span id="total">
+                                                    0.00
+                                                </span>
+                                            </div>
 
+
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
                             <!-- /.card-body -->
@@ -84,6 +106,7 @@
         <script>
             $(document).ready(function() {
                 let addedItems = []
+                let subTotals = []
                 $('.add-to-cart-btn').click(function(e) {
                     e.preventDefault();
                     let data = $(this).data();
@@ -106,7 +129,7 @@
                             <input class="form-control price" name="product_prices[]" type="number" value="${data.price}" readonly>
                         </div>
                         <div class="col-md-2">
-                            <input class="form-control quantity" name="product_quantities[]" type="number" value="1">
+                    <input class="form-control quantity" name="product_quantities[]" type="number" value="1" data-id="${data.id}">
                         </div>
                         <div class="col-md-2">
                             <span class="sub-total">
@@ -114,7 +137,7 @@
                             </span>
                         </div>
                         <div class="col-md-2">
-                            <button class="delete-item btn btn-default">
+                            <button class="delete-item btn btn-default" data-id="${data.id}">
                                 <span class="fas fa-trash text-danger">
                                 </span> 
                             </button>
@@ -124,20 +147,52 @@
                         </div>`
                         $('.cart').append(inputHtml);
                             addedItems.push(data.id)
+                            subTotals.push({
+                                id:data.id,
+                                value: data.price,
+                            })
+                            updateTotal()
                     }
 
                 });
                 $('form').on('change', '.quantity', function(e) {
                     e.preventDefault();
                     let quantityField = $(this)
-                    let quantity = Number(quantityField.val())
+                    let id = quantityField.data('id')
+                    // let quantity = Number(quantityField.val())
+                    let quantity = quantityField.val()
                     let price = quantityField.parent().prev().children('.price').first().val()
                     let subtotalField = quantityField.parent().next().children('.sub-total').first()
                     let subtotal = quantity * price
                     subtotalField.text(` £ ${subtotal.toLocaleString()}`);
-                    console.log(price)
+                    let currentSubTotal = subTotals.find((element) => element.id == id)
+                    currentSubTotal.value = subtotal
+                    updateTotal()
+                    // console.log(price)
                 });
-            });
+
+                $('form').on('click', '.delete-item', function(e) {
+                   e.preventDefault();
+                   let id = $(this).data('id')
+                   $(`#item${id}`).remove();
+                   let index = addedItems.indexOf(id)
+                   if(index > -1) {
+                    addedItems.splice(index, 1)
+                   }
+                   let currentSubTotalIndex = subTotals.findIndex((element) => element.id == id)
+                   if (currentSubTotalIndex > -1) {
+                    subTotals.splice(currentSubTotalIndex, 1)
+                   }
+                   updateTotal()
+                });
+            
+
+            function updateTotal(){
+                let total = subTotals.reduce((accumulator, subTotal) => accumulator + subTotal.value, 0)
+                $('#total').text(total.toLocaleString());
+            }
+
+        });
         </script>
     @endpush
 </x-app-layout>
