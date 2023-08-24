@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Requests\PostOrder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
@@ -48,9 +51,54 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(PostOrder $request): RedirectResponse
     {
-        //
+        //validate the request
+        //Get the data from the request
+        //Store the data as a new record
+        DB::beginTransaction();
+
+        try {
+            $productIds = $request->product_ids;
+            $quantities = $request->product_quantities;
+            $products = Menu::whereIn('id', $productIds)->get();
+            $orderData = [
+                'user_id' => $request->user()->id,
+            ];
+            $order = Order::create($orderData);
+            $orderItems = [];
+            $netTotal = 0;
+    
+            foreach ($quantities as $key => $quantity) {
+                $productId = $productIds[$key];
+                $product = $products->first(function($value) use($productId){
+                    return $value->id == $productId;
+                });
+                $subTotal = $quantity * $product->price;
+                $netTotal += $subTotal;
+                array_push($orderItems, [
+                  'order_id' => $order->id,
+                  'menu_id' => $product->id,
+                  'restaurant_id' => $product->restaurant_id,
+                  'restaurant_owner_id' => $product->restaurant_owner_id,
+                  'quantity' => $quantity,
+                  'total' => $subTotal,
+                ]);
+            }
+            OrderItem::createMany($orderItems);
+            $order->update([
+                'sub_total' => $netTotal,
+                'net_total' => $netTotal,
+            ]);
+
+            DB::commit();
+            return redirect(route('orders.index'))->with([
+                'status' => 'Order Created Successfully'
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**

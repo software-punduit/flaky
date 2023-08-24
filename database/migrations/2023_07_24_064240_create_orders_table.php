@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
-            $table->bigInteger('restaurant_id')->unsigned();
-            $table->bigInteger('restaurant_owner_id')->unsigned();
+            // $table->bigInteger('restaurant_id')->unsigned();
+            // $table->bigInteger('restaurant_owner_id')->unsigned();
             $table->bigInteger('sub_total')->unsigned()->default(0);
             $table->bigInteger('discount')->unsigned()->default(0);
             $table->bigInteger('net_total')->unsigned()->default(0);
@@ -24,8 +24,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
-            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('restrict');
-            $table->foreign('restaurant_owner_id')->references('id')->on('users')->onDelete('restrict');
+            // $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('restrict');
+            // $table->foreign('restaurant_owner_id')->references('id')->on('users')->onDelete('restrict');
         });
     }
 
