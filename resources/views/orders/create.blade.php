@@ -20,8 +20,21 @@
 
                             <div class="card-body">
                                 <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="restaurant_id">
+                                            Restaurant
+                                        </label>
+                                        <select class="form-control" name="restaurant_id" id="restaurant_id">
+                                            @foreach ($restaurants as $restaurant)
+                                                <option value="{{ $restaurant->id }}">
+                                                    {{ $restaurant->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <hr width="100%">
+                                    </div>
                                     <div class="col-md-12 cart">
-                                        
+
                                     </div>
                                     <div class="col-md-12">
                                         <hr width="100%">
@@ -57,7 +70,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="row">
+                    <div class="row" id="products">
                         @forelse ($menuItems as $menuItem)
                             <div class="col-md-6">
                                 <div class="card">
@@ -107,7 +120,7 @@
             $(document).ready(function() {
                 let addedItems = []
                 let subTotals = []
-                $('.add-to-cart-btn').click(function(e) {
+                $('#products').on('click', '.add-to-cart-btn', function(e) {
                     e.preventDefault();
                     let data = $(this).data();
                     let itemId = `item${data.id}`
@@ -146,15 +159,16 @@
 
                         </div>`
                         $('.cart').append(inputHtml);
-                            addedItems.push(data.id)
-                            subTotals.push({
-                                id:data.id,
-                                value: data.price,
-                            })
-                            updateTotal()
+                        addedItems.push(data.id)
+                        subTotals.push({
+                            id: data.id,
+                            value: data.price,
+                        })
+                        updateTotal()
                     }
 
                 });
+
                 $('form').on('change', '.quantity', function(e) {
                     e.preventDefault();
                     let quantityField = $(this)
@@ -172,27 +186,85 @@
                 });
 
                 $('form').on('click', '.delete-item', function(e) {
-                   e.preventDefault();
-                   let id = $(this).data('id')
-                   $(`#item${id}`).remove();
-                   let index = addedItems.indexOf(id)
-                   if(index > -1) {
-                    addedItems.splice(index, 1)
-                   }
-                   let currentSubTotalIndex = subTotals.findIndex((element) => element.id == id)
-                   if (currentSubTotalIndex > -1) {
-                    subTotals.splice(currentSubTotalIndex, 1)
-                   }
-                   updateTotal()
+                    e.preventDefault();
+                    let id = $(this).data('id')
+                    $(`#item${id}`).remove();
+                    let index = addedItems.indexOf(id)
+                    if (index > -1) {
+                        addedItems.splice(index, 1)
+                    }
+                    let currentSubTotalIndex = subTotals.findIndex((element) => element.id == id)
+                    if (currentSubTotalIndex > -1) {
+                        subTotals.splice(currentSubTotalIndex, 1)
+                    }
+                    updateTotal()
                 });
-            
 
-            function updateTotal(){
-                let total = subTotals.reduce((accumulator, subTotal) => accumulator + subTotal.value, 0)
-                $('#total').text(total.toLocaleString());
-            }
 
-        });
+                function updateTotal() {
+                    let total = subTotals.reduce((accumulator, subTotal) => accumulator + subTotal.value, 0)
+                    $('#total').text(total.toLocaleString());
+                }
+
+                $('#restaurant_id').change(function(e) {
+                    e.preventDefault();
+                    let restaurantId = $(this).val()
+                    let url = `{{ route('menus.index') }}?restaurant=${restaurantId}`
+
+                    $.get(url, {}, function(data, textStatus, jqXHR) {
+                            console.log('menus', data)
+                            let htmlData = ''
+                            if (data.length == 0) {
+                                htmlData = `<div class="col-md-6 offset-md-3">
+                                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                    <strong>Note!</strong> Nothing here for now, check back later.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            </div> `
+                            } else {
+                                data.forEach(menuItem => {
+                                    htmlData += ` <div class="col-md-6">
+                                <div class="card">
+                                    <img src="${menuItem.photo_url}" class="card-img-top"
+                                        alt="image of ${menuItem.name}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            ${menuItem.name}
+                                            {{-- &nbsp; --}}
+                                            <small>
+                                                £${Number(menuItem.price).toLocaleString()}
+                                            </small>
+                                        </h5>
+
+                                        <p class="card-text text-muted">
+                                            <span class="text-muted">
+                                                ${menuItem.restaurant.name} 
+                                            </span>
+                                        </p>
+
+                                    </div>
+                                    <button class="btn btn-primary add-to-cart-btn" data-id="${menuItem.id}"
+                                        data-name="${menuItem.name}" data-price="${menuItem.price}">Add to
+                                        Cart</button>
+
+                                </div>
+                            </div>`
+                                });
+                            }
+                            $('#products').html(htmlData);
+                            $('.cart').html('');
+                            addedItems = [];
+                            subTotals = []
+                            updateTotal()
+                        },
+                        "json"
+                    );
+
+                });
+
+            });
         </script>
     @endpush
 </x-app-layout>

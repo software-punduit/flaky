@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\User;
+use App\Models\Restaurant;
 use App\Traits\UploadsPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,6 +13,7 @@ use App\Http\Requests\PostMenu;
 use App\Models\RestaurantStaff;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 
@@ -26,22 +28,41 @@ class MenuController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response|View
+    // public function index(): Response|View
+    // {
+    //     $user = Auth::user();
+    //     if ($user->hasRole(User::RESTUARANT_OWNER)) {
+    //         $menus = $user->menus;
+    //     } else {
+    //         $restaurantIds = RestaurantStaff::where('staff_id', $user->id)
+    //             ->pluck('restaurant_id');
+    //         $menus = Menu::whereHas('restaurant', function ($query) use ($restaurantIds) {
+
+    //             $query->whereIn('restaurant_id', $restaurantIds);
+    //         })->get();
+    //     }
+
+    //         return view('menus.index', compact('menus'));
+    //  }
+
+    public function index(Request $request): Response|View|JsonResponse
     {
         $user = Auth::user();
-        if ($user->hasRole(User::RESTUARANT_OWNER)) {
-            $menus = $user->menus;
-        } else {
-            $restaurantIds = RestaurantStaff::where('staff_id', $user->id)
-                ->pluck('restaurant_id');
-            $menus = Menu::whereHas('restaurant', function ($query) use ($restaurantIds) {
-
+        if($request->has('restaurant')) {
+            $restaurant = Restaurant::find($request->restaurant);
+            $menus = $restaurant->menuItems()->with(['restaurant'])->get();
+            return response()->json($menus);
+        }
+        elseif ($user->hasRole(User::RESTUARANT_OWNER)){
+                $menus = $user->menus;
+            }else {
+            $restaurantIds = RestaurantStaff::where('staff_id', $user->id)->pluck('restaurant_id');
+            $menus = Menu::whereHas('restaurant', function($query) use ($restaurantIds){
                 $query->whereIn('restaurant_id', $restaurantIds);
             })->get();
         }
-
-            return view('menus.index', compact('menus'));
-     }
+        return view('menus.index', compact('menus'));
+    }
     
 
     /**

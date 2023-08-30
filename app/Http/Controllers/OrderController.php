@@ -6,6 +6,7 @@ use App\Models\Menu;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\PostOrder;
@@ -44,8 +45,10 @@ class OrderController extends Controller
      */
     public function create(): Response|View
     {
-        $menuItems = Menu::active()->get();
-        return view('orders.create', compact('menuItems'));
+        $restaurants = Restaurant::active()->get();
+        $restaurant = $restaurants->first();
+        $menuItems = $restaurant->menuItems()->active()->get();
+        return view('orders.create', compact('menuItems', 'restaurants'));
     }
 
     /**
