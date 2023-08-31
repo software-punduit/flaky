@@ -65,30 +65,36 @@ class OrderController extends Controller
             $productIds = $request->product_ids;
             $quantities = $request->product_quantities;
             $products = Menu::whereIn('id', $productIds)->get();
+            $restaurant = Restaurant::find($request->restaurant_id);
+            $userId = $request->user()->id;
+
             $orderData = [
-                'user_id' => $request->user()->id,
+                'user_id' => $userId,
+                'restaurant_id' => $restaurant->id,
+                'restaurant_owner_id' => $restaurant->user_id,
             ];
             $order = Order::create($orderData);
             $orderItems = [];
             $netTotal = 0;
-    
+
             foreach ($quantities as $key => $quantity) {
                 $productId = $productIds[$key];
-                $product = $products->first(function($value) use($productId){
+                $product = $products->first(function ($value) use ($productId) {
                     return $value->id == $productId;
                 });
                 $subTotal = $quantity * $product->price;
                 $netTotal += $subTotal;
                 array_push($orderItems, [
-                  'order_id' => $order->id,
-                  'menu_id' => $product->id,
-                  'restaurant_id' => $product->restaurant_id,
-                  'restaurant_owner_id' => $product->restaurant_owner_id,
-                  'quantity' => $quantity,
-                  'total' => $subTotal,
+                    //   'order_id' => $order->id,
+                    'user_id' => $userId,
+                    'menu_id' => $product->id,
+                    'restaurant_id' => $product->restaurant_id,
+                    'restaurant_owner_id' => $product->restaurant_owner_id,
+                    'quantity' => $quantity,
+                    'total' => $subTotal,
                 ]);
             }
-            OrderItem::createMany($orderItems);
+            $order->orderItems()->createMany($orderItems);
             $order->update([
                 'sub_total' => $netTotal,
                 'net_total' => $netTotal,

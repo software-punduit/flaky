@@ -54,14 +54,14 @@
                                             </td>
 
                                             <td>
-                                                {{ $order->$user->name }}
+                                                {{ $order->user->name }}
                                             </td>
                                             <td>
                                                 {{ number_format($order->net_total) }}
                                             </td>
                                             <td
                                                 class="{{ $order->status == 'completed' ? 'text-success' : 'text-danger' }}">
-                                                {{ $order->status ? 'Yes' : 'No' }}
+                                                {{ $order->status}}
 
                                             </td>
                                             <td>

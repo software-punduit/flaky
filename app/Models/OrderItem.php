@@ -15,6 +15,7 @@ class OrderItem extends Model
         'restaurant_id',
         'restaurant_owner_id',
         'quantity',
-        'total'
+        'total',
+        'user_id'
     ];
 }

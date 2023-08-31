@@ -31,6 +31,11 @@ class PostOrder extends FormRequest
             'product_ids.*' => [
                 'required',
                 'exists:menus,id'
+            ],
+
+            'restaurant_id' => [
+                'required',
+                'exists:restaurants,id'
             ]
 
         ];
