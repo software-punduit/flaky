@@ -202,6 +202,6 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
      */
     public function restaurantStaffOrders(): HasManyThrough
     {
-        return $this->hasManyThrough(Order::class, RestaurantStaff::class, 'restaurant_id', 'restaurant_id');
+        return $this->hasManyThrough(Order::class, RestaurantStaff::class, 'staff_id', 'restaurant_id');
     }
 }

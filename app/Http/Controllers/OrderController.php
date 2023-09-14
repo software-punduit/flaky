@@ -10,6 +10,7 @@ use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\PostOrder;
+use App\Http\Requests\PutOrder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -72,6 +73,7 @@ class OrderController extends Controller
                 'user_id' => $userId,
                 'restaurant_id' => $restaurant->id,
                 'restaurant_owner_id' => $restaurant->user_id,
+                'order_number' => Order::getOrderNumber(),
             ];
             $order = Order::create($orderData);
             $orderItems = [];
@@ -113,9 +115,9 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order $order): Response
+    public function show(Order $order): Response|View
     {
-        //
+        return view('orders.show', compact('order'));
     }
 
     /**
@@ -129,9 +131,14 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Order $order): RedirectResponse
+    public function update(PutOrder $request, Order $order): RedirectResponse
     {
-        //
+        $data = $request->validated();
+        $order->update($data);
+
+        return redirect(route('orders.index'))->with([
+            'status' => 'Order Updated Successfully'
+        ]);
     }
 
     /**

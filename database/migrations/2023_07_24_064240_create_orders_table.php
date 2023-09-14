@@ -21,6 +21,7 @@ return new class extends Migration
             $table->bigInteger('discount')->unsigned()->default(0);
             $table->bigInteger('net_total')->unsigned()->default(0);
             $table->string('status', 100)->default(Order::STATUS_PENDING);
+            $table->string('order_number', 100);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
