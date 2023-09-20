@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\MenuController;
-use App\Http\Controllers\RestaurantTableController;
 use App\Models\RestaurantTable;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\RestaurantStaffController;
+use App\Http\Controllers\RestaurantTableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +21,9 @@ use App\Http\Controllers\RestaurantStaffController;
 |
 */
 
-   Route::get('/', function () {
-        return view('welcome');
-    });
+Route::get('/', function () {
+    return view('welcome');
+});
 
 Route::middleware([
     'auth:sanctum',
@@ -44,5 +45,6 @@ Route::middleware([
     Route::resource('restaurant-tables', RestaurantTableController::class);
 
     Route::resource('menus', MenuController::class);
- 
+
+    Route::resource('orders', OrderController::class);
 });
