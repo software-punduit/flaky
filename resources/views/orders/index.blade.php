@@ -64,7 +64,7 @@
                                                 {{ number_format($order->net_total) }}
                                             </td>
                                             <td
-                                                class="{{ $order->status == 'completed' ? 'text-success' : 'text-danger' }}">
+                                                class="{{ $order->status == 'completed' ? 'text-success' : ($order->status == 'cancelled' ? 'text-danger' : 'text-warning') }}">
                                                 {{ $order->status }}
 
                                             </td>
@@ -75,7 +75,7 @@
                                                         <i class="fas fa-eye"></i>
                                                     </a>
 
-                                                 @if ($order->user_id != Auth::user()->id)
+                                                    @if ($order->user_id != Auth::user()->id)
                                                         <form action="{{ route('orders.update', $order->id) }}"
                                                             method="post" style="display: inline-block">
                                                             @csrf
@@ -85,6 +85,19 @@
                                                                 <button class="btn btn-primary" title="Mark as Completed"
                                                                     type="submit">
                                                                     <i class="fas fa-check"></i>
+                                                                </button>
+                                                            @endif
+                                                        </form>
+                                                    @else
+                                                        <form action="{{ route('orders.update', $order->id) }}"
+                                                            method="post" style="display: inline-block">
+                                                            @csrf
+                                                            @method('put')
+                                                            @if ($order->status == 'pending')
+                                                                <input type="hidden" name="status" value="cancelled">
+                                                                <button class="btn btn-danger" title=" Cancel Order"
+                                                                    type="submit">
+                                                                    <i class="fas fa-times"></i>
                                                                 </button>
                                                             @endif
                                                         </form>
