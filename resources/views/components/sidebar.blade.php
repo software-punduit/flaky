@@ -20,6 +20,10 @@
                     <span class="text-secondary">
                         {{ Auth::user()->highest_role }}
                     </span>
+                    <br>
+                    <span class="text-info">
+                        £ {{ number_format(Auth::user()->wallet->balance)}}
+                    </span>
                 </a>
             </div>
         </div>
