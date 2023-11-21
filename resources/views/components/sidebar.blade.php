@@ -124,6 +124,17 @@
                         </a>
                     </li>
                 @endcan
+                @can('transaction.view')
+                    <li class="nav-item">
+                        <a href="{{ route('transactions.index') }}"
+                            class="nav-link {{ Str::startsWith(Route::current()->uri(), 'transactions') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-wallet"></i>
+                            <p>
+                                Transactions
+                            </p>
+                        </a>
+                    </li>
+                @endcan
 
 
                 <li class="nav-header">MULTI LEVEL EXAMPLE</li>

@@ -21,7 +21,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             PermissionTableSeeder::class,
-            SuperAdminSeeder::class
+            SuperAdminSeeder::class,
+            TransactionCategoriesTableSeeder::class,
+            TransactionTypesTableSeeder::class
 
         ]);
     }

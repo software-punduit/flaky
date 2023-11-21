@@ -6,9 +6,13 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FundWalletController;
 use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\WithdrawWalletController;
 use App\Http\Controllers\RestaurantStaffController;
 use App\Http\Controllers\RestaurantTableController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -47,4 +51,12 @@ Route::middleware([
     Route::resource('menus', MenuController::class);
 
     Route::resource('orders', OrderController::class);
+
+    Route::resource('transactions', TransactionController::class);
+
+    Route::get('fund-wallet', [FundWalletController::class, 'create'])->name('fund-wallet.create');
+    Route::post('fund-wallet', [FundWalletController::class, 'store'])->name('fund-wallet.store');
+
+    Route::get('withdraw-wallet', [WithdrawWalletController::class, 'create'])->name('withdraw-wallet.create');
+    Route::post('withdraw-wallet', [WithdrawWalletController::class, 'store'])->name('withdraw-wallet.store');
 });
