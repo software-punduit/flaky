@@ -20,6 +20,10 @@
                     <span class="text-secondary">
                         {{ Auth::user()->highest_role }}
                     </span>
+                    <br>
+                    <span class="text-info">
+                        £ {{ number_format(Auth::user()->wallet->balance)}}
+                    </span>
                 </a>
             </div>
         </div>
@@ -116,6 +120,17 @@
                             <i class="nav-icon fas fa-shopping-cart"></i>
                             <p>
                                 Orders
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+                @can('transaction.view')
+                    <li class="nav-item">
+                        <a href="{{ route('transactions.index') }}"
+                            class="nav-link {{ Str::startsWith(Route::current()->uri(), 'transactions') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-wallet"></i>
+                            <p>
+                                Transactions
                             </p>
                         </a>
                     </li>

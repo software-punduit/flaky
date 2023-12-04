@@ -54,6 +54,10 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         'password',
     ];
 
+    protected $with = [
+        'wallet'
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -162,7 +166,6 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     public function restaurantTables(): HasManyThrough
     {
         return $this->hasManyThrough(RestaurantTable::class, Restaurant::class);
-
     }
 
     /**
@@ -180,7 +183,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function Order(): HasMany
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
@@ -203,5 +206,15 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     public function restaurantStaffOrders(): HasManyThrough
     {
         return $this->hasManyThrough(Order::class, RestaurantStaff::class, 'staff_id', 'restaurant_id');
+    }
+
+    /**
+     * Get the wallet associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function wallet(): HasOne
+    {
+        return $this->hasOne(Wallet::class);
     }
 }
