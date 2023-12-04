@@ -6,7 +6,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
-                    <x-status-alert></x-status-alert>
+                    <x-error-alert value="insufficient-balance" message="Insufficient Balance"></x-error-alert>
                     <!-- general form elements -->
                     <div class="card card-primary">
                         <div class="card-header">

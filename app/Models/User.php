@@ -183,7 +183,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function Order(): HasMany
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }

@@ -35,22 +35,25 @@ class WithdrawWalletController extends Controller
         //Get the data 
         //store the data
         
-        $user = Auth::user();
         $data = $request->only('amount');
+        $user = Auth::user();
         $wallet = $user->wallet;
-        $payerBalanceBefore = $wallet->balance;
+        $balance = $wallet->balance ?? 0;
 
-        if ($payerBalanceBefore < $data['amount']) {
+        if ($balance < $request->amount) {
             return back()->withErrors(['amount' => 'Insufficient Balance'])->withInput();
         }
         DB::beginTransaction();
 
         try {
+            if($balance >= $request->amount) {
+                $category = TransactionCategory::where('name', Constants::TRANSACTION_CATEGORY_WITHDRAWAL)->first();
+                $status = TransactionStatus::where('name',Constants::TRANSACTION_STATUS_PENDING)->first();
 
-            $category = TransactionCategory::where('name', Constants::TRANSACTION_CATEGORY_WITHDRAWAL)->first();
-            $status = TransactionStatus::where('name', Constants::TRANSACTION_STATUS_PENDING)->first();
+                $payerBalanceBefore = $wallet->balance;
+            
 
-            $data = array_merge($data, [
+                 $data = array_merge($data, [
                 'transaction_category_id' => $category->id,
                 'transaction_status_id' => $status->id,
                 'payer_balance_before' => $payerBalanceBefore,
@@ -60,12 +63,14 @@ class WithdrawWalletController extends Controller
 
             $transaction = Transaction::create($data);
             //Update the wallet
-            $payerBalanceAfter = $payerBalanceBefore - $data['amount'];
+            $balance = $balance - $data['amount'];
             // $penceAmount = $wallet->convertToPence($data['amount']);
-            $wallet->update(['balance' => $payerBalanceAfter]);
+            $wallet->update(['balance' => $balance]);
 
             //Update the status
             $status = TransactionStatus::where('name', Constants::TRANSACTION_STATUS_COMPLETE)->first();
+
+            $payerBalanceAfter = $wallet->balance;
             $data = [
                 'transaction_status_id' => $status->id,
                 'payer_balance_after' => $payerBalanceAfter,
@@ -77,9 +82,12 @@ class WithdrawWalletController extends Controller
             return redirect(route('transactions.index'))->with([
                 'status' => 'Withdrawal Successful'
             ]);
+        }
+        
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
         }
     }
 }
+
